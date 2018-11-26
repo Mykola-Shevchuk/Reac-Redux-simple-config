@@ -1,22 +1,20 @@
-import { GET_BOOKS, ADD_BOOKS } from "../actions/types";
+import {GET_BOOKS} from "../actions/types";
 
 const initialState = {
-    books: []
+  items: [],
+  isLoaded: false
 };
 
 export default (state = initialState, action) => {
-    switch (action.type) {
-        case GET_BOOKS: 
-          return {
-            books: action.payload
-          };
-        case ADD_BOOKS:
-            return {
-                ...state,
-                books: action.payload
-            };
-        default:
-            return state;
+  switch (action.type) {
+    case GET_BOOKS:
+      return {
+        ...state,
+        items: action.payload,
+        isLoaded: true
+      };
+    default:
+      return state;
 
-    }
+  }
 }
