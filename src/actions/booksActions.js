@@ -1,6 +1,6 @@
-import { GET_BOOKS } from "./types";
+import { GET_BOOKS, FILTER_BOOKS } from "./types";
 
-const getBooks = () => dispatch  => {
+const getBooks = () => dispatch => {
   fetch('/books.json')
     .then(res => res.json())
     .then(data => dispatch({
@@ -9,6 +9,15 @@ const getBooks = () => dispatch  => {
   }));
 };
 
+const filterBooks = typeFilter => dispatch => {
+  return dispatch ({
+    type: FILTER_BOOKS,
+    payload: typeFilter
+  })
+};
+
 export {
-  getBooks
+  getBooks,
+  filterBooks
 }
+
