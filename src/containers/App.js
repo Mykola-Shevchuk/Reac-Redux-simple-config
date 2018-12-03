@@ -7,7 +7,6 @@ import {getBooks} from '../actions/booksActions';
 import '../css/app.css';
 import Filter from "./BookFilter";
 import orderBy from 'lodash/orderBy';
-import {filterTypes, dataTypes} from '../helpers/';
 
 class App extends Component {
   componentDidMount() {
@@ -23,7 +22,7 @@ class App extends Component {
         <Container>
           <Nav/>
           <Filter />
-          <Card.Group itemsPerRow={3}>
+          <Card.Group itemsPerRow={4}>
             {isLoaded ? bookItem : 'Loading...'}
           </Card.Group>
         </Container>
@@ -33,27 +32,31 @@ class App extends Component {
 }
 
 const sortBy = (books, filterBy) => {
-  const {all, authorName, priceHigh, priceLow, popular} = filterTypes;
-  const {author, price, rating} = dataTypes;
-
   switch (filterBy) {
-    case all:
-      return books;
-    case authorName:
-      return orderBy(books, author, 'asc');
-    case priceHigh:
-      return orderBy(books, price, 'asc');
-    case priceLow:
-      return orderBy(books, price, 'desc');
-    case popular:
-      return orderBy(books, rating);
+    case 'price_high':
+      return orderBy(books, 'price', 'desc');
+    case 'price_low':
+      return orderBy(books, 'price', 'asc');
+    case 'author':
+      return orderBy(books, 'author', 'asc');
     default:
       return books;
   }
 };
 
+const filterBooks = (books, searchQuery) =>
+  books.filter(
+    o =>
+      o.title.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0 ||
+      o.author.toLowerCase().indexOf(searchQuery.toLowerCase()) >= 0,
+  );
+
+const searchBooks = (books, filterBy, searchQuery) => {
+  return sortBy(filterBooks(books, searchQuery), filterBy);
+};
+
 const mapStateToProps = state => ({
-  books: sortBy(state.booksReducer.items, state.filterReducer.filterBy),
+  books: state.booksReducer.items && searchBooks(state.booksReducer.items, state.filterReducer.filterBy, state.filterReducer.searchQuery),
   isLoaded: state.booksReducer.isLoaded
 });
 
